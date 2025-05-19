@@ -9,14 +9,12 @@ import java.time.LocalDateTime;
 public class CreateResponseDto {
 
     private final Long id;
-    private final String username;
     private final String title;
     private final String contents;
     private final LocalDateTime createdAt;
 
     public CreateResponseDto(Schedule schedule) {
         this.id = schedule.getId();
-        this.username = schedule.getUsername();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.createdAt = schedule.getCreatedAt();

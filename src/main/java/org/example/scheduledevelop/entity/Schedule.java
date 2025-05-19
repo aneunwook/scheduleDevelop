@@ -15,18 +15,18 @@ public class Schedule extends BaseEntity{
     private Long id;
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String contents;
 
+    @ManyToOne
+    @JoinColumn (name = "user_id")
+    private User user;
+
     public Schedule() {}
 
     public Schedule(String username, String title, String contents) {
-        this.username = username;
         this.title = title;
         this.contents = contents;
     }
