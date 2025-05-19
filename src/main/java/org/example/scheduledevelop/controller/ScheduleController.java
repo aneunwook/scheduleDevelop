@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.dto.scheduledto.CreateRequestDto;
 import org.example.scheduledevelop.dto.scheduledto.CreateResponseDto;
 import org.example.scheduledevelop.dto.scheduledto.ScheduleResponseDto;
+import org.example.scheduledevelop.dto.scheduledto.UpdateScheduleRequestDto;
 import org.example.scheduledevelop.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +41,13 @@ public class ScheduleController {
 
         return new ResponseEntity<>(findId, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto requestDto){
+        ScheduleResponseDto updated = scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getContents());
+
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
 
 }

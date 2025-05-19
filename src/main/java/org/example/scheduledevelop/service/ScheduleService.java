@@ -6,6 +6,7 @@ import org.example.scheduledevelop.dto.scheduledto.ScheduleResponseDto;
 import org.example.scheduledevelop.entity.Schedule;
 import org.example.scheduledevelop.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,7 +32,18 @@ public class ScheduleService {
     public ScheduleResponseDto findById(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
 
-        return new ScheduleResponseDto(schedule.getId(), schedule.getUsername(), schedule.getTitle(),schedule.getContents());
+        return ScheduleResponseDto.toDto(schedule);
 
     }
+
+    @Transactional
+    public ScheduleResponseDto updateSchedule(Long id, String title, String contents) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
+
+        schedule.setTitle(title);
+        schedule.setContents(contents);
+
+        return ScheduleResponseDto.toDto(schedule);
+    }
+
 }
