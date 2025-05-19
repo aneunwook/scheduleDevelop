@@ -21,15 +21,15 @@ public class Schedule extends BaseEntity{
     private String contents;
 
     @ManyToOne
-    @JoinColumn (name = "user_id")
+    @JoinColumn (name = "user_id", nullable = false)
     private User user;
 
     public Schedule() {}
 
-    public Schedule(String username, String title, String contents) {
+    public Schedule(String title, String contents, User user) {
         this.title = title;
         this.contents = contents;
+        this.user = user;
     }
-
 
 }

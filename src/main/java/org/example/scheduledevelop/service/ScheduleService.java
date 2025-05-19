@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.dto.scheduledto.CreateResponseDto;
 import org.example.scheduledevelop.dto.scheduledto.ScheduleResponseDto;
 import org.example.scheduledevelop.entity.Schedule;
+import org.example.scheduledevelop.entity.User;
 import org.example.scheduledevelop.repository.ScheduleRepository;
+import org.example.scheduledevelop.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +17,12 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
-    public CreateResponseDto save(String username, String title, String contents) {
-        Schedule schedule = new Schedule(username, title, contents);
+    public CreateResponseDto save(String title, String contents, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+
+        Schedule schedule = new Schedule(title, contents, user);
 
         Schedule saved = scheduleRepository.save(schedule);
 
@@ -37,7 +42,9 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long id, String title, String contents) {
+    public ScheduleResponseDto updateSchedule(Long id, String title, String contents, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
 
         schedule.setTitle(title);

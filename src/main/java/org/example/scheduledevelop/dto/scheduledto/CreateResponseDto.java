@@ -2,6 +2,7 @@ package org.example.scheduledevelop.dto.scheduledto;
 
 import lombok.Getter;
 import org.example.scheduledevelop.entity.Schedule;
+import org.example.scheduledevelop.entity.User;
 
 import java.time.LocalDateTime;
 
@@ -13,10 +14,13 @@ public class CreateResponseDto {
     private final String contents;
     private final LocalDateTime createdAt;
 
+    private final User user;
+
     public CreateResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();
         this.createdAt = schedule.getCreatedAt();
+        this.user = schedule.getUser();
     }
 }
