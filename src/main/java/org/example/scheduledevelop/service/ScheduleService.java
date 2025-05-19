@@ -46,4 +46,10 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(schedule);
     }
 
+    public void deleteSchedule(Long id) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
+
+        scheduleRepository.delete(schedule);
+
+    }
 }
