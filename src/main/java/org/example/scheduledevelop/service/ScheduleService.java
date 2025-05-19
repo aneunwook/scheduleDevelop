@@ -21,7 +21,7 @@ public class ScheduleService {
 
         Schedule saved = scheduleRepository.save(schedule);
 
-        return new CreateResponseDto(saved.getId(), saved.getUsername(), saved.getTitle(), saved.getContents());
+        return new CreateResponseDto(saved);
 
     }
 
