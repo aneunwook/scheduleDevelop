@@ -1,6 +1,7 @@
 package org.example.scheduledevelop.dto.scheduledto;
 
 import lombok.Getter;
+import org.example.scheduledevelop.dto.userdto.UserResponseDto;
 import org.example.scheduledevelop.entity.Schedule;
 import org.example.scheduledevelop.entity.User;
 
@@ -14,7 +15,7 @@ public class ScheduleResponseDto {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private final User user;
+    private final UserResponseDto user;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();;
@@ -23,7 +24,7 @@ public class ScheduleResponseDto {
         this.createdAt = schedule.getCreatedAt();
         this.updatedAt = schedule.getUpdatedAt();
 
-        this.user = schedule.getUser();
+        this.user = new UserResponseDto(schedule.getUser());
     }
 
     public static ScheduleResponseDto toDto(Schedule schedule) {
