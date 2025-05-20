@@ -1,19 +1,19 @@
 package org.example.scheduledevelop.dto.scheduledto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateRequestDto {
 
-    private final String title;
+    private String title;
 
-    private final String contents;
+    private String contents;
 
-    private final Long userId;
+    private Long userId;
 
-    public CreateRequestDto(String title, String contents, Long userId) {
-        this.title = title;
-        this.contents = contents;
-        this.userId = userId;
-    }
+
 }

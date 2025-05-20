@@ -3,7 +3,6 @@ package org.example.scheduledevelop.dto.scheduledto;
 import lombok.Getter;
 import org.example.scheduledevelop.dto.userdto.UserResponseDto;
 import org.example.scheduledevelop.entity.Schedule;
-import org.example.scheduledevelop.entity.User;
 
 import java.time.LocalDateTime;
 

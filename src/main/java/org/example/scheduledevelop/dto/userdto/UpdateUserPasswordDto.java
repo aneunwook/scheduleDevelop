@@ -1,16 +1,16 @@
 package org.example.scheduledevelop.dto.userdto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateUserPasswordDto {
 
-    private final String oldPassword;
+    private String oldPassword;
 
-    private final String newPassword;
+    private String newPassword;
 
-    public UpdateUserPasswordDto(String oldPassword, String newPassword) {
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
-    }
 }

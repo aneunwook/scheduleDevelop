@@ -1,14 +1,14 @@
 package org.example.scheduledevelop.dto.userdto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginRequestDto {
-    private final String email;
-    private final String password;
+    private String email;
+    private String password;
 
-    public LoginRequestDto(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 }
