@@ -1,7 +1,9 @@
 package org.example.scheduledevelop.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.scheduledevelop.dto.userdto.LoginRequestDto;
 import org.example.scheduledevelop.dto.userdto.SignupRequestDto;
 import org.example.scheduledevelop.dto.userdto.SignupResponseDto;
 import org.example.scheduledevelop.dto.userdto.UpdateUserPasswordDto;
@@ -26,6 +28,13 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request){
+        userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword(), request);
+
+        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<SignupResponseDto>> findAllUsers(){
         List<SignupResponseDto> allUser = userService.findAllUsers();
@@ -45,6 +54,13 @@ public class UserController {
         SignupResponseDto updatePassword = userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
 
         return new ResponseEntity<>(updatePassword, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
