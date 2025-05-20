@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.dto.userdto.SignupRequestDto;
 import org.example.scheduledevelop.dto.userdto.SignupResponseDto;
+import org.example.scheduledevelop.dto.userdto.UpdateUserPasswordDto;
 import org.example.scheduledevelop.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> createUser(@RequestBody SignupRequestDto requestDto){
-        SignupResponseDto user = userService.createUser(requestDto.getEmail(), requestDto.getUsername());
+        SignupResponseDto user = userService.createUser(requestDto.getEmail(), requestDto.getUsername(), requestDto.getPassword());
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -37,6 +38,13 @@ public class UserController {
         SignupResponseDto byId = userService.findById(id);
 
         return new ResponseEntity<>(byId, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SignupResponseDto> updatePassword(@PathVariable Long id, @RequestBody UpdateUserPasswordDto requestDto){
+        SignupResponseDto updatePassword = userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+
+        return new ResponseEntity<>(updatePassword, HttpStatus.OK);
     }
 
 }
