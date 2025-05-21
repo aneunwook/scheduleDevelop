@@ -26,12 +26,11 @@ public class ScheduleController {
     public ResponseEntity<CreateResponseDto> save(@RequestBody @Valid CreateRequestDto requestDto, HttpSession session){
 
         User user = (User) session.getAttribute("user");
-        Long userId = user.getId();
 
         CreateResponseDto saved = scheduleService.save(
                 requestDto.getTitle(),
                 requestDto.getContents(),
-                userId);
+                user.getId());
 
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
@@ -51,15 +50,20 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid UpdateScheduleRequestDto requestDto){
-        ScheduleResponseDto updated = scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getContents(), requestDto.getUserId());
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid UpdateScheduleRequestDto requestDto, HttpSession session){
+        User user = (User) session.getAttribute("user");
+
+        ScheduleResponseDto updated = scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getContents(), user.getId());
 
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id){
-        scheduleService.deleteSchedule(id);
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+
+        scheduleService.deleteSchedule(id, user.getId());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
