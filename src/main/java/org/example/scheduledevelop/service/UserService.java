@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.scheduledevelop.config.PasswordEncoder;
 import org.example.scheduledevelop.dto.userdto.SignupResponseDto;
 import org.example.scheduledevelop.entity.User;
 import org.example.scheduledevelop.repository.UserRepository;
@@ -12,16 +13,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public SignupResponseDto createUser(String email, String username, String password) {
-        User user = new User(email, username, password);
+        String encode = passwordEncoder.encode(password);
+
+        User user = new User(email, username, encode);
 
         User savedUser = userRepository.save(user);
 
@@ -31,7 +34,7 @@ public class UserService {
     public void login(String email, String password, HttpServletRequest request) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
 
-        if (!user.getPassword().equals(password)){
+        if (!passwordEncoder.matches(password, user.getPassword())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
 
@@ -54,11 +57,13 @@ public class UserService {
     public SignupResponseDto updatePassword(Long id, String oldPassword, String newPassword) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
 
-        if(!user.getPassword().equals(oldPassword)){
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
 
-        user.setPassword(newPassword);
+        String encode = passwordEncoder.encode(newPassword);
+
+        user.setPassword(encode);
 
         return new SignupResponseDto(user);
     }
