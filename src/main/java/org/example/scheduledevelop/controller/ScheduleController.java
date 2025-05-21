@@ -1,10 +1,13 @@
 package org.example.scheduledevelop.controller;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.dto.scheduledto.CreateRequestDto;
 import org.example.scheduledevelop.dto.scheduledto.CreateResponseDto;
 import org.example.scheduledevelop.dto.scheduledto.ScheduleResponseDto;
 import org.example.scheduledevelop.dto.scheduledto.UpdateScheduleRequestDto;
+import org.example.scheduledevelop.entity.User;
 import org.example.scheduledevelop.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +23,15 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<CreateResponseDto> save(@RequestBody CreateRequestDto requestDto){
+    public ResponseEntity<CreateResponseDto> save(@RequestBody @Valid CreateRequestDto requestDto, HttpSession session){
+
+        User user = (User) session.getAttribute("user");
+        Long userId = user.getId();
+
         CreateResponseDto saved = scheduleService.save(
                 requestDto.getTitle(),
                 requestDto.getContents(),
-                requestDto.getUserId());
+                userId);
 
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
@@ -44,7 +51,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto requestDto){
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid UpdateScheduleRequestDto requestDto){
         ScheduleResponseDto updated = scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getContents(), requestDto.getUserId());
 
         return new ResponseEntity<>(updated, HttpStatus.OK);

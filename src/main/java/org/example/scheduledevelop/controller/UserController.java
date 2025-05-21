@@ -1,7 +1,7 @@
 package org.example.scheduledevelop.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.dto.userdto.LoginRequestDto;
 import org.example.scheduledevelop.dto.userdto.SignupRequestDto;
@@ -22,14 +22,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponseDto> createUser(@RequestBody SignupRequestDto requestDto){
+    public ResponseEntity<SignupResponseDto> createUser(@RequestBody @Valid SignupRequestDto requestDto){
         SignupResponseDto user = userService.createUser(requestDto.getEmail(), requestDto.getUsername(), requestDto.getPassword());
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request){
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequestDto loginRequestDto, HttpServletRequest request){
         userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword(), request);
 
         return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SignupResponseDto> updatePassword(@PathVariable Long id, @RequestBody UpdateUserPasswordDto requestDto){
+    public ResponseEntity<SignupResponseDto> updatePassword(@PathVariable Long id, @RequestBody @Valid UpdateUserPasswordDto requestDto){
         SignupResponseDto updatePassword = userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
 
         return new ResponseEntity<>(updatePassword, HttpStatus.OK);
