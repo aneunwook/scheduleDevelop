@@ -14,8 +14,10 @@ import org.example.scheduledevelop.schedule.entity.Schedule;
 import org.example.scheduledevelop.schedule.repository.ScheduleRepository;
 import org.example.scheduledevelop.user.entity.User;
 import org.example.scheduledevelop.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -52,8 +54,26 @@ public class CommentService {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
 
+        if (!user.getId().equals(comment.getUser().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 수정 할 수 없습니다.");
+        }
+
         comment.setComment(requestDto.getComment());
 
         return new CommentResponseDto(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+
+        if (!user.getId().equals(comment.getUser().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 삭제 할 수 없습니다.");
+        }
+
+        commentRepository.delete(comment);
+
     }
 }

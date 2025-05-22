@@ -16,29 +16,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping()
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/{scheduleId}")
+    @PostMapping("/schedules/{scheduleId}/comments")
     public ResponseEntity<CommentCreateResponseDto> createComment(@PathVariable Long scheduleId, @RequestBody @Valid CommentCreateRequestDto requestDto, HttpSession session){
-
         User user = (User) session.getAttribute("user");
+
         CommentCreateResponseDto comment = commentService.createComment(user.getId(), scheduleId, requestDto);
 
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{scheduleId}")
+    @GetMapping("/schedules/{scheduleId}/comments")
     public ResponseEntity<List<CommentResponseDto>> getCommentsByScheduleId(@PathVariable Long scheduleId){
         List<CommentResponseDto> commentsByScheduleId = commentService.getCommentsByScheduleId(scheduleId);
 
         return new ResponseEntity<>(commentsByScheduleId, HttpStatus.OK);
     }
 
-    @PutMapping("/{commentId}")
+    @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId, @RequestBody @Valid CommentUpdateRequestDto requestDto, HttpSession session){
         User user = (User) session.getAttribute("user");
 
@@ -46,4 +46,14 @@ public class CommentController {
 
         return new ResponseEntity<>(updateComment, HttpStatus.OK);
     }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, HttpSession session){
+        User user = (User) session.getAttribute("user");
+
+        commentService.deleteComment(commentId, user.getId());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
