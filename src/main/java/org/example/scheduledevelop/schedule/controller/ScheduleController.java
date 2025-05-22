@@ -1,14 +1,14 @@
-package org.example.scheduledevelop.controller;
+package org.example.scheduledevelop.schedule.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.scheduledevelop.dto.scheduledto.CreateRequestDto;
-import org.example.scheduledevelop.dto.scheduledto.CreateResponseDto;
-import org.example.scheduledevelop.dto.scheduledto.ScheduleResponseDto;
-import org.example.scheduledevelop.dto.scheduledto.UpdateScheduleRequestDto;
-import org.example.scheduledevelop.entity.User;
-import org.example.scheduledevelop.service.ScheduleService;
+import org.example.scheduledevelop.schedule.dto.ScheduleCreateRequestDto;
+import org.example.scheduledevelop.schedule.dto.ScheduleCreateResponseDto;
+import org.example.scheduledevelop.schedule.dto.ScheduleResponseDto;
+import org.example.scheduledevelop.schedule.dto.UpdateScheduleRequestDto;
+import org.example.scheduledevelop.user.entity.User;
+import org.example.scheduledevelop.schedule.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +23,11 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<CreateResponseDto> save(@RequestBody @Valid CreateRequestDto requestDto, HttpSession session){
+    public ResponseEntity<ScheduleCreateResponseDto> save(@RequestBody @Valid ScheduleCreateRequestDto requestDto, HttpSession session){
 
         User user = (User) session.getAttribute("user");
 
-        CreateResponseDto saved = scheduleService.save(
+        ScheduleCreateResponseDto saved = scheduleService.save(
                 requestDto.getTitle(),
                 requestDto.getContents(),
                 user.getId());

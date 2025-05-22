@@ -1,9 +1,8 @@
-package org.example.scheduledevelop.dto.scheduledto;
+package org.example.scheduledevelop.schedule.dto;
 
 import lombok.Getter;
-import org.example.scheduledevelop.dto.userdto.UserResponseDto;
-import org.example.scheduledevelop.entity.Schedule;
-import org.example.scheduledevelop.entity.User;
+import org.example.scheduledevelop.user.dto.UserResponseDto;
+import org.example.scheduledevelop.schedule.entity.Schedule;
 
 import java.time.LocalDateTime;
 

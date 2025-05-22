@@ -1,10 +1,9 @@
-package org.example.scheduledevelop.repository;
+package org.example.scheduledevelop.user.repository;
 
-import org.example.scheduledevelop.entity.User;
+import org.example.scheduledevelop.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

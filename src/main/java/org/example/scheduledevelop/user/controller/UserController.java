@@ -1,13 +1,13 @@
-package org.example.scheduledevelop.controller;
+package org.example.scheduledevelop.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.scheduledevelop.dto.userdto.LoginRequestDto;
-import org.example.scheduledevelop.dto.userdto.SignupRequestDto;
-import org.example.scheduledevelop.dto.userdto.SignupResponseDto;
-import org.example.scheduledevelop.dto.userdto.UpdateUserPasswordDto;
-import org.example.scheduledevelop.service.UserService;
+import org.example.scheduledevelop.user.dto.LoginRequestDto;
+import org.example.scheduledevelop.user.dto.SignupRequestDto;
+import org.example.scheduledevelop.user.dto.SignupResponseDto;
+import org.example.scheduledevelop.user.dto.UpdateUserPasswordDto;
+import org.example.scheduledevelop.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

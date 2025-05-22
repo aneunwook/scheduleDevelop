@@ -1,13 +1,13 @@
-package org.example.scheduledevelop.dto.scheduledto;
+package org.example.scheduledevelop.schedule.dto;
 
 import lombok.Getter;
-import org.example.scheduledevelop.dto.userdto.UserResponseDto;
-import org.example.scheduledevelop.entity.Schedule;
+import org.example.scheduledevelop.user.dto.UserResponseDto;
+import org.example.scheduledevelop.schedule.entity.Schedule;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class CreateResponseDto {
+public class ScheduleCreateResponseDto {
 
     private final Long id;
     private final String title;
@@ -16,7 +16,7 @@ public class CreateResponseDto {
 
     private final UserResponseDto user;
 
-    public CreateResponseDto(Schedule schedule) {
+    public ScheduleCreateResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.contents = schedule.getContents();

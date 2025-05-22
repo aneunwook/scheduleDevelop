@@ -1,7 +1,7 @@
-package org.example.scheduledevelop.dto.userdto;
+package org.example.scheduledevelop.user.dto;
 
 import lombok.Getter;
-import org.example.scheduledevelop.entity.User;
+import org.example.scheduledevelop.user.entity.User;
 
 @Getter
 public class UserResponseDto {

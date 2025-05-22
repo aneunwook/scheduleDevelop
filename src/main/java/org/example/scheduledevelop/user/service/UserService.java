@@ -1,13 +1,13 @@
-package org.example.scheduledevelop.service;
+package org.example.scheduledevelop.user.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.config.PasswordEncoder;
-import org.example.scheduledevelop.dto.userdto.SignupResponseDto;
-import org.example.scheduledevelop.entity.User;
-import org.example.scheduledevelop.repository.UserRepository;
+import org.example.scheduledevelop.user.dto.SignupResponseDto;
+import org.example.scheduledevelop.user.entity.User;
+import org.example.scheduledevelop.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

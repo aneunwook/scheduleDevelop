@@ -1,12 +1,12 @@
-package org.example.scheduledevelop.service;
+package org.example.scheduledevelop.schedule.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.scheduledevelop.dto.scheduledto.CreateResponseDto;
-import org.example.scheduledevelop.dto.scheduledto.ScheduleResponseDto;
-import org.example.scheduledevelop.entity.Schedule;
-import org.example.scheduledevelop.entity.User;
-import org.example.scheduledevelop.repository.ScheduleRepository;
-import org.example.scheduledevelop.repository.UserRepository;
+import org.example.scheduledevelop.schedule.dto.ScheduleCreateResponseDto;
+import org.example.scheduledevelop.schedule.dto.ScheduleResponseDto;
+import org.example.scheduledevelop.schedule.entity.Schedule;
+import org.example.scheduledevelop.user.entity.User;
+import org.example.scheduledevelop.schedule.repository.ScheduleRepository;
+import org.example.scheduledevelop.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +21,14 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
-    public CreateResponseDto save(String title, String contents, Long userId) {
+    public ScheduleCreateResponseDto save(String title, String contents, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
 
         Schedule schedule = new Schedule(title, contents, user);
 
         Schedule saved = scheduleRepository.save(schedule);
 
-        return new CreateResponseDto(saved);
+        return new ScheduleCreateResponseDto(saved);
 
     }
 
