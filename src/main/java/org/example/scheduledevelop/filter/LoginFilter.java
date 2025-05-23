@@ -23,7 +23,9 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             if (session == null || session.getAttribute("user") == null ){
-                throw new RuntimeException("로그인 해주세요");
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpResponse.getWriter().write("로그인을 해주세요.");
+                return;
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);

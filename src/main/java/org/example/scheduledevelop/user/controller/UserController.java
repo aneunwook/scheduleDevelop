@@ -1,12 +1,14 @@
 package org.example.scheduledevelop.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.user.dto.LoginRequestDto;
 import org.example.scheduledevelop.user.dto.SignupRequestDto;
 import org.example.scheduledevelop.user.dto.SignupResponseDto;
 import org.example.scheduledevelop.user.dto.UpdateUserPasswordDto;
+import org.example.scheduledevelop.user.entity.User;
 import org.example.scheduledevelop.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +52,10 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SignupResponseDto> updatePassword(@PathVariable Long id, @RequestBody @Valid UpdateUserPasswordDto requestDto){
-        SignupResponseDto updatePassword = userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+    public ResponseEntity<SignupResponseDto> updatePassword(@PathVariable Long id, @RequestBody @Valid UpdateUserPasswordDto requestDto, HttpSession session){
+        User user = (User) session.getAttribute("user");
+
+        SignupResponseDto updatePassword = userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword(), user.getId());
 
         return new ResponseEntity<>(updatePassword, HttpStatus.OK);
     }

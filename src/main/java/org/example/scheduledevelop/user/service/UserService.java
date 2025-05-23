@@ -5,12 +5,13 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.config.PasswordEncoder;
+import org.example.scheduledevelop.exception.ForbiddenException;
+import org.example.scheduledevelop.exception.EmailOrPasswordDoesNotMatch;
+import org.example.scheduledevelop.exception.UserNotFoundException;
 import org.example.scheduledevelop.user.dto.SignupResponseDto;
 import org.example.scheduledevelop.user.entity.User;
 import org.example.scheduledevelop.user.repository.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,10 +33,10 @@ public class UserService {
     }
 
     public void login(String email, String password, HttpServletRequest request) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EmailOrPasswordDoesNotMatch("이메일이 일치하지 않습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+            throw new EmailOrPasswordDoesNotMatch("비밀번호가 일치하지 않습니다.");
         }
 
         HttpSession session = request.getSession();
@@ -48,17 +49,21 @@ public class UserService {
     }
 
     public SignupResponseDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저가 없습니다."));
 
         return new SignupResponseDto(user);
     }
 
     @Transactional
-    public SignupResponseDto updatePassword(Long id, String oldPassword, String newPassword) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+    public SignupResponseDto updatePassword(Long id, String oldPassword, String newPassword, Long userId) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저가 없습니다."));
+
+        if(!userId.equals(user.getId())){
+            throw new ForbiddenException("본인만 수정할 수 있습니다.");
+        }
 
         if(!passwordEncoder.matches(oldPassword, user.getPassword())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+            throw new EmailOrPasswordDoesNotMatch("비밀번호가 일치하지 않습니다.");
         }
 
         String encode = passwordEncoder.encode(newPassword);
@@ -69,11 +74,8 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저가 없습니다."));
 
         userRepository.delete(user);
-
     }
-
-
 }

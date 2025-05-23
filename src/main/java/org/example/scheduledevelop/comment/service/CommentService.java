@@ -10,6 +10,10 @@ import org.example.scheduledevelop.comment.dto.CommentResponseDto;
 import org.example.scheduledevelop.comment.dto.CommentUpdateRequestDto;
 import org.example.scheduledevelop.comment.entity.Comment;
 import org.example.scheduledevelop.comment.repository.CommentRepository;
+import org.example.scheduledevelop.exception.CommentNotFoundException;
+import org.example.scheduledevelop.exception.ForbiddenException;
+import org.example.scheduledevelop.exception.ScheduleNotFoundException;
+import org.example.scheduledevelop.exception.UserNotFoundException;
 import org.example.scheduledevelop.schedule.entity.Schedule;
 import org.example.scheduledevelop.schedule.repository.ScheduleRepository;
 import org.example.scheduledevelop.user.entity.User;
@@ -30,9 +34,9 @@ public class CommentService {
     private final UserRepository userRepository;
 
     public CommentCreateResponseDto createComment(Long userId, Long scheduleId, CommentCreateRequestDto dto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
 
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다"));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleNotFoundException("해당 일정이 존재하지 않습니다."));
 
         Comment comments = new Comment(dto.getComment(), user, schedule);
         Comment commentSave = commentRepository.save(comments);
@@ -41,7 +45,7 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getCommentsByScheduleId(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다"));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleNotFoundException("해당 일정이 존재하지 않습니다."));
 
         List<Comment> comments = commentRepository.findByScheduleId(schedule.getId());
 
@@ -50,12 +54,12 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto updateComment(Long userId, Long commentId, CommentUpdateRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("해당 댓글이 존재하지 않습니다."));
 
         if (!user.getId().equals(comment.getUser().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 수정 할 수 없습니다.");
+            throw new ForbiddenException("해당 게시물을 수정 할 수 없습니다.");
         }
 
         comment.setComment(requestDto.getComment());
@@ -65,12 +69,12 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException("해당 댓글이 존재하지 않습니다."));
 
         if (!user.getId().equals(comment.getUser().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 삭제 할 수 없습니다.");
+            throw new ForbiddenException("해당 게시물을 삭제 할 수 없습니다.");
         }
 
         commentRepository.delete(comment);

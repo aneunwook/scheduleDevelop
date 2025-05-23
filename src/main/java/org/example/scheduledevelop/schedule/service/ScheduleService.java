@@ -3,6 +3,9 @@ package org.example.scheduledevelop.schedule.service;
 import lombok.RequiredArgsConstructor;
 import org.example.scheduledevelop.comment.entity.Comment;
 import org.example.scheduledevelop.comment.repository.CommentRepository;
+import org.example.scheduledevelop.exception.ForbiddenException;
+import org.example.scheduledevelop.exception.ScheduleNotFoundException;
+import org.example.scheduledevelop.exception.UserNotFoundException;
 import org.example.scheduledevelop.schedule.dto.ScheduleCreateResponseDto;
 import org.example.scheduledevelop.schedule.dto.ScheduleResponseDto;
 import org.example.scheduledevelop.schedule.entity.Schedule;
@@ -25,10 +28,9 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
 
     public ScheduleCreateResponseDto save(String title, String contents, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다"));
 
         Schedule schedule = new Schedule(title, contents, user);
 
@@ -40,11 +42,12 @@ public class ScheduleService {
 
     public Page<ScheduleResponseDto> findAllSortedByUpdatedAt(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+
         return scheduleRepository.findAllByOrderByUpdatedAtDesc(pageable).map(ScheduleResponseDto::toDto);
     }
 
     public ScheduleResponseDto findById(Long id) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleNotFoundException("해당 일정을 찾을 수 없습니다"));
 
         return ScheduleResponseDto.toDto(schedule);
 
@@ -52,12 +55,12 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleResponseDto updateSchedule(Long id, String title, String contents, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다"));
 
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleNotFoundException("해당 일정을 찾을 수 없습니다"));
 
         if (!user.getId().equals(schedule.getUser().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 수정 할 수 없습니다.");
+            throw new ForbiddenException("해당 게시물을 수정 할 수 없습니다.");
         }
 
         schedule.setTitle(title);
@@ -68,12 +71,12 @@ public class ScheduleService {
 
     @Transactional
     public void deleteSchedule(Long id, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다"));
 
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleNotFoundException("해당 일정을 찾을 수 없습니다"));
 
         if (!user.getId().equals(schedule.getUser().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 삭제 할 수 없습니다.");
+            throw new ForbiddenException("해당 게시물을 삭제 할 수 없습니다.");
         }
 
         scheduleRepository.delete(schedule);

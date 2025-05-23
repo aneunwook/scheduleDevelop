@@ -1,4 +1,4 @@
-package org.example.scheduledevelop.common;
+package org.example.scheduledevelop.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
