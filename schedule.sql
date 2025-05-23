@@ -15,5 +15,18 @@ CREATE TABLE schedule (
       user_id BIGINT NOT NULL,
       created_at DATETIME(6),
       updated_at DATETIME(6),
+
       CONSTRAINT fk_schedule_user FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
+CREATE TABLE comment (
+     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+     comment VARCHAR(255) NOT NULL,
+     user_id BIGINT NOT NULL,
+     schedule_id BIGINT NOT NULL,
+     created_at DATETIME(6),
+     updated_at DATETIME(6),
+
+     CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES user(id),
+     CONSTRAINT fk_comment_schedule FOREIGN KEY (schedule_id) REFERENCES schedule(id)
 );
