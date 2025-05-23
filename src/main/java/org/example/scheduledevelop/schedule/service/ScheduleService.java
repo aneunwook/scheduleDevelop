@@ -9,12 +9,14 @@ import org.example.scheduledevelop.schedule.entity.Schedule;
 import org.example.scheduledevelop.user.entity.User;
 import org.example.scheduledevelop.schedule.repository.ScheduleRepository;
 import org.example.scheduledevelop.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,26 +38,15 @@ public class ScheduleService {
 
     }
 
-    public List<ScheduleResponseDto> findAll() {
-        List<Schedule> schedules = scheduleRepository.findAll();
-        List<ScheduleResponseDto> result = new ArrayList<>();
-
-        for (Schedule schedule : schedules){
-            List<Comment> comments = commentRepository.findByScheduleId(schedule.getId());
-            ScheduleResponseDto dto = new ScheduleResponseDto(schedule, comments);
-
-            result.add(dto);
-        }
-
-        return result;
+    public Page<ScheduleResponseDto> findAllSortedByUpdatedAt(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return scheduleRepository.findAllByOrderByUpdatedAtDesc(pageable).map(ScheduleResponseDto::toDto);
     }
 
     public ScheduleResponseDto findById(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
 
-        List<Comment> comments = commentRepository.findByScheduleId(schedule.getId());
-
-        return ScheduleResponseDto.toDto(schedule, comments);
+        return ScheduleResponseDto.toDto(schedule);
 
     }
 
@@ -65,8 +56,6 @@ public class ScheduleService {
 
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 일정을 찾을 수 없습니다"));
 
-        List<Comment> comments = commentRepository.findByScheduleId(schedule.getId());
-
         if (!user.getId().equals(schedule.getUser().getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시물을 수정 할 수 없습니다.");
         }
@@ -74,7 +63,7 @@ public class ScheduleService {
         schedule.setTitle(title);
         schedule.setContents(contents);
 
-        return ScheduleResponseDto.toDto(schedule, comments);
+        return ScheduleResponseDto.toDto(schedule);
     }
 
     @Transactional

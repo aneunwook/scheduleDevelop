@@ -9,6 +9,8 @@ import org.example.scheduledevelop.schedule.dto.ScheduleResponseDto;
 import org.example.scheduledevelop.schedule.dto.UpdateScheduleRequestDto;
 import org.example.scheduledevelop.user.entity.User;
 import org.example.scheduledevelop.schedule.service.ScheduleService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +38,10 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findAll(){
-        List<ScheduleResponseDto> findAll = scheduleService.findAll();
+    public ResponseEntity<Page<ScheduleResponseDto>> findAllSortedByUpdatedAt(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size){
+        Page<ScheduleResponseDto> findAll = scheduleService.findAllSortedByUpdatedAt(page, size);
 
         return new ResponseEntity<>(findAll, HttpStatus.OK);
     }
