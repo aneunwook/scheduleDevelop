@@ -32,16 +32,22 @@ public class UserService {
         return new SignupResponseDto(savedUser);
     }
 
-    public void login(String email, String password, HttpServletRequest request) {
+    public User login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new EmailOrPasswordDoesNotMatch("이메일이 일치하지 않습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())){
             throw new EmailOrPasswordDoesNotMatch("비밀번호가 일치하지 않습니다.");
         }
 
-        HttpSession session = request.getSession();
+        return user;
+    }
 
-        session.setAttribute("user", user);
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null){
+            session.invalidate();
+        }
     }
 
     public List<SignupResponseDto> findAllUsers() {
@@ -78,4 +84,6 @@ public class UserService {
 
         userRepository.delete(user);
     }
+
+
 }

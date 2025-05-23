@@ -1,6 +1,8 @@
 package org.example.scheduledevelop.user.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +34,25 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid LoginRequestDto loginRequestDto, HttpServletRequest request){
-        userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword(), request);
+
+        User user = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+
+        HttpSession session = request.getSession();
+        session.setAttribute("user", user);
 
         return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response){
+        userService.logout(request);
+
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return new ResponseEntity<>("로그아웃 됨", HttpStatus.OK);
     }
 
     @GetMapping

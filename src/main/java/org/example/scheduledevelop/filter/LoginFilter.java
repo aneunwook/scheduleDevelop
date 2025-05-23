@@ -23,6 +23,8 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             if (session == null || session.getAttribute("user") == null ){
+                httpResponse.setCharacterEncoding("UTF-8");
+                httpResponse.setContentType("text/plain; charset=UTF-8");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpResponse.getWriter().write("로그인을 해주세요.");
                 return;
