@@ -79,8 +79,12 @@ public class UserService {
         return new SignupResponseDto(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id, Long userId) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("해당 유저가 없습니다."));
+
+        if(!user.getId().equals(userId)){
+            throw new ForbiddenException("본인만 삭제할 수 있습니다.");
+        }
 
         userRepository.delete(user);
     }
