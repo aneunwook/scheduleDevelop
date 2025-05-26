@@ -29,6 +29,15 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
+
+    /**
+     * 일정 생성
+     *
+     * @param title 일정 제목
+     * @param contents 일정 내용
+     * @param userId 작성자 ID (세션)
+     * @return 생성된 일정 DTO
+     */
     public ScheduleCreateResponseDto save(String title, String contents, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다"));
 
@@ -40,12 +49,25 @@ public class ScheduleService {
 
     }
 
+    /**
+     * 수정일 기준으로 페이징 하며 일정 전체 조회
+     *
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     * @return 일정 목록
+     */
     public Page<ScheduleResponseDto> findAllSortedByUpdatedAt(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         return scheduleRepository.findAllByOrderByUpdatedAtDesc(pageable).map(ScheduleResponseDto::toDto);
     }
 
+    /**
+     * 특정 일정을 id로 일정 조회
+     *
+     * @param id 일정의 id
+     * @return 조회된 일정 DTO
+     */
     public ScheduleResponseDto findById(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleNotFoundException("해당 일정을 찾을 수 없습니다"));
 
@@ -53,6 +75,15 @@ public class ScheduleService {
 
     }
 
+    /**
+     *  특정 일정을 id로 일정 수정
+     *
+     * @param id 일정의 id
+     * @param title 일정 수정할 제목
+     * @param contents 일정 수정할 내용
+     * @param userId 사용자 ID
+     * @return 수정된 일정 DTO
+     */
     @Transactional
     public ScheduleResponseDto updateSchedule(Long id, String title, String contents, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다"));
@@ -69,6 +100,12 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(schedule);
     }
 
+    /**
+     * 특정 일정을 id로 일정 삭제
+     *
+     * @param id 일정 ID
+     * @param userId 요청한 사용자 ID
+     */
     @Transactional
     public void deleteSchedule(Long id, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다"));

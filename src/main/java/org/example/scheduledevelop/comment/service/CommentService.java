@@ -33,6 +33,14 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 댓글 생성
+     *
+     * @param userId 댓글을 작성하는 사용자 ID
+     * @param scheduleId 댓글이 작성될 일정 ID
+     * @param dto 댓글 생성 요청 DTO
+     * @return 생성된 댓글의 응답 DTO
+     */
     public CommentCreateResponseDto createComment(Long userId, Long scheduleId, CommentCreateRequestDto dto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
 
@@ -44,6 +52,12 @@ public class CommentService {
         return new CommentCreateResponseDto(commentSave);
     }
 
+    /**
+     * 해당 일정에 있는 댓글 전체 조회
+     *
+     * @param scheduleId 조회할 일정 ID
+     * @return 해당 일정에 달린 댓글 리스트
+     */
     public List<CommentResponseDto> getCommentsByScheduleId(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleNotFoundException("해당 일정이 존재하지 않습니다."));
 
@@ -52,6 +66,14 @@ public class CommentService {
         return comments.stream().map(CommentResponseDto::new).toList();
     }
 
+    /**
+     * 댓글 수정
+     *
+     * @param userId 댓글을 수정하려는 사용자 ID
+     * @param commentId 수정할 댓글 ID
+     * @param requestDto 수정 요청 DTO
+     * @return 수정된 댓글의 응답 DTO
+     */
     @Transactional
     public CommentResponseDto updateComment(Long userId, Long commentId, CommentUpdateRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
@@ -67,6 +89,12 @@ public class CommentService {
         return new CommentResponseDto(comment);
     }
 
+    /**
+     * 댓글 삭제
+     *
+     * @param commentId 삭제할 댓글 ID
+     * @param userId 삭제를 요청한 사용자 ID
+     */
     @Transactional
     public void deleteComment(Long commentId, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));

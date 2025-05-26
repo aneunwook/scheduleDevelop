@@ -19,5 +19,4 @@ public class ScheduleCreateRequestDto {
     @Size(max = 100, message = "내용은 100글자 이내로 입력해주세요.")
     private String contents;
 
-
 }
